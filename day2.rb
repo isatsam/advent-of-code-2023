@@ -33,6 +33,7 @@ class Game
             reveals[count_rev] = cubes.dup
             count_rev += 1
         end
+
         return reveals
     end
 
@@ -57,15 +58,50 @@ class Game
 
         return true
     end
-end
 
-sum = 0
+    def minimum
+        mins = @reveals[0].dup
+        
+        @reveals.keys.each do |rev_num|
+            @reveals[rev_num].keys.each do |colour|
+                if @reveals[rev_num][colour] > mins[colour]
+                    mins[colour] = @reveals[rev_num][colour]
+                end
+            end
+        end
 
-IO.foreach('day2.txt') do |line|
-    game = Game.new(line)
-    if game.possible?
-        sum += game.id
+        return mins
+    end
+
+    def power_of_min
+        power = 1
+        mins = self.minimum
+        mins.each do |colour|
+            power = power * colour[1]
+        end
+
+        return power
     end
 end
 
-puts sum
+def part_1
+    sum = 0
+    IO.foreach('day2.txt') do |line|
+        game = Game.new(line)
+        if game.possible?
+            sum += game.id
+        end
+    end
+    puts sum
+end
+
+def part_2
+    sum = 0
+    IO.foreach('day2.txt') do |line|
+        game = Game.new(line)
+        sum += game.power_of_min
+    end
+    puts sum
+end
+
+part_2
